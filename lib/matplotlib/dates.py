@@ -592,12 +592,16 @@ def drange(dstart, dend, delta):
 
 
 def _wrap_in_tex(text):
-    p = r'([a-zA-Z]+)'
-    ret_text = re.sub(p, r'}$\1$\\mathdefault{', text)
-
-    # Braces ensure dashes are not spaced like binary operators.
-    ret_text = '$\\mathdefault{'+ret_text.replace('-', '{-}')+'}$'
-    ret_text = ret_text.replace('$\\mathdefault{}$', '')
+    # Escape characters that have special meaning in LaTeX for better spacing
+    # Replace spaces with proper LaTeX spacing command
+    ret_text = text.replace(' ', r'\;')
+    # Replace colons with braced version to avoid math spacing issues
+    ret_text = ret_text.replace(':', r'{:}')
+    # Braces ensure dashes are not spaced like binary operators
+    ret_text = ret_text.replace('-', r'{-}')
+    
+    # Wrap the entire text in mathdefault for consistent formatting
+    ret_text = f'$\\mathdefault{{{ret_text}}}$'
     return ret_text
 
 
